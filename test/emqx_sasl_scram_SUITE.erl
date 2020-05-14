@@ -128,4 +128,13 @@ t_proto(_) ->
                                      {connect_timeout, 6000}]),
     {error,{not_authorized,#{}}} = emqtt:connect(Client2),
 
+    receive_msg(),
     process_flag(trap_exit, false).
+
+receive_msg() ->
+    receive
+        {'EXIT', Msg} -> 
+            ct:print("==========+~p~n", [Msg]), 
+            receive_msg()
+    after 200 -> ok
+    end.
